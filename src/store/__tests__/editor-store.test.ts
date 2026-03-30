@@ -10,6 +10,10 @@ describe('Editor Store', () => {
   beforeEach(() => {
     // Reset store state before each test
     const store = useEditorStore.getState()
+    // Restore default file if missing
+    if (!store.files['default']) {
+      useEditorStore.setState({ files: { ...store.files, 'default': { id: 'default', name: 'untitled.js', content: '', lastModified: Date.now() } } })
+    }
     // Clear all files except default
     const fileIds = Object.keys(store.files).filter(id => id !== 'default')
     fileIds.forEach(id => store.deleteFile(id))

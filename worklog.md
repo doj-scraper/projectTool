@@ -384,3 +384,26 @@ window.visualViewport?.addEventListener('resize', () => {
 ---
 
 *Last updated: 2025-01-24 08:15 UTC*
+
+## Session 5: Deployment Bug Fix
+
+**Timestamp:** 2025-01-24 08:30 UTC
+**Duration:** ~30 minutes
+
+### Issues Addressed
+
+| Bug | Severity | Time Found | Status |
+|-----|----------|------------|--------|
+| B6: Application fails to display on Vercel deployment | Critical | 08:15 UTC | Fixed |
+
+### Root Cause Analysis
+The application built successfully but threw a runtime error upon loading the page:
+`Unrecognized extension value in extension set ([object Object]). This sometimes happens because multiple instances of @codemirror/state are loaded, breaking instanceof checks.`
+
+This was caused by multiple incompatible versions of `@codemirror/state` and `@codemirror/view` being installed within the project's dependency tree, specifically due to `@uiw/react-codemirror` and various `@codemirror/lang-*` packages resolving to different minor versions.
+
+### Fix Implemented
+Resolved dependency version conflicts by explicitly installing consistent versions of all `@codemirror` related packages. All packages were aligned to use `@codemirror/state@6.6.0` and `@codemirror/view@6.40.0`.
+
+### Vercel Deployment Check
+Confirmed that the `next.config.ts` uses `output: "standalone"`, which is compatible with Vercel and generic Node.js deployments. The `build` command succeeds and page rendering works without any duplicate package issues.
